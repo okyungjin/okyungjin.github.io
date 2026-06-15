@@ -201,15 +201,17 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
         padding-bottom: 0.3em;
         border-bottom: 1px solid var(--line);
       }
-      /* h3: subsection, marked with a blue left accent bar. */
+      /* h3: subsection shown as a soft blue callout (tint bg + blue bar). */
       .prose h3 {
-        margin-top: 1.5em;
-        margin-bottom: 0.4em;
+        margin-top: 1.6em;
+        margin-bottom: 0.6em;
         font-size: 19px;
-        padding-left: 12px;
+        padding: 8px 16px;
+        background: var(--accent-weak);
         border-left: 3px solid var(--accent);
+        border-radius: 0 8px 8px 0;
       }
-      /* h4: minor point, distinguished by size and weight only. */
+      /* h4: minor point, dark and bold for readability. */
       .prose h4 {
         margin-top: 1.2em;
         margin-bottom: 0.3em;
@@ -303,30 +305,16 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
         background: color-mix(in srgb, currentColor 9%, transparent);
         color: color-mix(in srgb, var(--ink-900) 55%, transparent);
         cursor: pointer;
-        opacity: 0;
-        transform: translateY(-1px);
-        transition: opacity var(--dur-fast) var(--ease-smooth),
-          background-color var(--dur-fast) var(--ease-smooth),
+        transition: background-color var(--dur-fast) var(--ease-smooth),
           color var(--dur-fast) var(--ease-smooth);
-      }
-      .prose pre:hover .copy-btn,
-      .copy-btn:focus-visible {
-        opacity: 1;
       }
       .copy-btn:hover {
         background: color-mix(in srgb, currentColor 16%, transparent);
         color: var(--ink-900);
       }
       .copy-btn.is-copied {
-        opacity: 1;
         color: #2f9e44;
         background: color-mix(in srgb, #2f9e44 15%, transparent);
-      }
-      /* Always discoverable on touch devices (no hover). */
-      @media (hover: none) {
-        .copy-btn {
-          opacity: 0.6;
-        }
       }
       .copy-btn svg {
         width: 15px;
