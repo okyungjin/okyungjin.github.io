@@ -159,16 +159,10 @@ main {
   }
 }
 
-/* Dense post grid shared by home / category / tag pages. */
-.post-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
-  gap: 18px;
-}
-@media (max-width: 520px) {
-  .post-grid {
-    grid-template-columns: 1fr;
-  }
+/* Horizontal post list shared by home / category / tag pages. */
+.post-list {
+  display: flex;
+  flex-direction: column;
 }
 
 /* ---- Tag chips --------------------------------------------------------- */

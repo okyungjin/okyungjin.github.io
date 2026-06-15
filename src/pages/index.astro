@@ -21,7 +21,7 @@ const posts = (await getCollection('posts')).sort(
     <span>{posts.length}개</span>
   </div>
 
-  <div class="post-grid">
+  <div class="post-list">
     {
       posts.map((post) => (
         <PostCard
@@ -29,6 +29,7 @@ const posts = (await getCollection('posts')).sort(
           title={post.data.title}
           description={post.data.description}
           pubDate={post.data.pubDate}
+          category={post.data.category}
           tags={post.data.tags}
           heroImage={post.data.heroImage}
         />

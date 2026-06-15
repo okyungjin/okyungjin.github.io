@@ -6,39 +6,41 @@ interface Props {
   title: string;
   description: string;
   pubDate: Date;
+  category?: string;
   tags: string[];
   heroImage?: string;
 }
 
-const { id, title, description, pubDate, tags, heroImage } = Astro.props;
+const { id, title, description, pubDate, category, tags, heroImage } = Astro.props;
 const href = `/posts/${id}/`;
 // Derive a stable accent hue from the slug so cover blocks vary but stay calm.
 const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
+const mark = category ?? tags[0]?.split('/')[0] ?? 'db';
 ---
 
-<article class="card">
-  <a class="card__link" href={href} aria-label={title}>
+<article class="row">
+  <a class="row__link" href={href} aria-label={title}>
     <div
-      class="card__cover"
+      class="row__cover"
       style={heroImage ? '' : `--cover-hue:${hue}`}
       data-has-image={heroImage ? 'true' : 'false'}
     >
       {
         heroImage ? (
-          <img class="card__img" src={heroImage} alt="" loading="lazy" />
+          <img class="row__img" src={heroImage} alt="" loading="lazy" />
         ) : (
-          <span class="card__cover-mark" aria-hidden="true">
-            {tags[0]?.split('/')[0] ?? 'db'}
+          <span class="row__cover-mark" aria-hidden="true">
+            {mark}
           </span>
         )
       }
     </div>
-    <div class="card__body">
-      <h2 class="card__title">{title}</h2>
-      <p class="card__desc">{description}</p>
-      <div class="card__meta">
+    <div class="row__body">
+      <h2 class="row__title">{title}</h2>
+      <p class="row__desc">{description}</p>
+      <div class="row__meta">
         <FormattedDate date={pubDate} />
-        <div class="card__tags">
+        <div class="row__tags">
           {tags.slice(0, 3).map((t) => <span class="chip">#{t}</span>)}
         </div>
       </div>
@@ -47,32 +49,32 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
 </article>
 
 <style>
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow-card);
-    transition: transform var(--dur) var(--ease-smooth),
-      box-shadow var(--dur) var(--ease-smooth),
-      border-color var(--dur) var(--ease-smooth);
-    will-change: transform;
+  .row {
+    border-bottom: 1px solid var(--line);
   }
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-card-hover);
-    border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  .row:first-child {
+    border-top: 1px solid var(--line);
   }
-  .card__link {
+  .row__link {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    align-items: center;
+    gap: 22px;
+    padding: 18px 12px;
+    border-radius: var(--radius-sm);
     color: inherit;
+    transition: background-color var(--dur) var(--ease-smooth);
   }
-  .card__cover {
+  .row__link:hover {
+    background: var(--surface);
+  }
+
+  .row__cover {
     position: relative;
-    aspect-ratio: 21 / 9;
+    flex: 0 0 196px;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid var(--line);
     background:
       radial-gradient(
         120% 120% at 20% 10%,
@@ -80,84 +82,113 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
         hsl(calc(var(--cover-hue, 214) + 40) 84% 52% / 0.9)
       );
   }
-  .card__img {
+  .row__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    /* Micro-zoom on hover — the signature card motion. */
     transform: scale(1.001);
     transition: transform var(--dur-slow) var(--ease-smooth);
   }
-  .card:hover .card__img {
+  .row__link:hover .row__img {
     transform: scale(1.06);
   }
-  .card__cover-mark {
+  .row__cover-mark {
     position: absolute;
     inset: 0;
     display: grid;
     place-items: center;
     color: #fff;
     font-weight: 800;
-    font-size: 24px;
+    font-size: 20px;
     letter-spacing: -0.04em;
     text-transform: lowercase;
     opacity: 0.92;
     transition: transform var(--dur-slow) var(--ease-smooth);
   }
-  .card:hover .card__cover-mark {
+  .row__link:hover .row__cover-mark {
     transform: scale(1.06);
   }
-  .card__body {
+
+  .row__body {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 14px 16px 16px;
-    flex: 1;
+    gap: 7px;
   }
-  .card__title {
+  .row__title {
     margin: 0;
-    font-size: 16.5px;
+    font-size: 18.5px;
     line-height: 1.4;
+    transition: color var(--dur-fast) var(--ease-smooth);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .card__desc {
+  .row__link:hover .row__title {
+    color: var(--accent);
+  }
+  .row__desc {
     margin: 0;
     color: var(--ink-700);
-    font-size: 13.5px;
-    line-height: 1.55;
+    font-size: 14px;
+    line-height: 1.6;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .card__meta {
-    margin-top: auto;
-    padding-top: 10px;
+  .row__meta {
+    margin-top: 2px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
     color: var(--ink-500);
     font-size: 12.5px;
   }
-  .card__meta :global(time) {
+  .row__meta :global(time) {
     flex-shrink: 0;
     white-space: nowrap;
   }
-  .card__tags {
+  .row__tags {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    justify-content: flex-end;
     overflow: hidden;
   }
-  .card__tags .chip {
+  .row__tags .chip {
     white-space: nowrap;
+  }
+
+  @media (max-width: 560px) {
+    .row__link {
+      gap: 14px;
+      padding: 16px 6px;
+      align-items: flex-start;
+    }
+    .row__cover {
+      flex-basis: 104px;
+      aspect-ratio: 1 / 1;
+    }
+    .row__cover-mark {
+      font-size: 15px;
+    }
+    .row__title {
+      font-size: 16px;
+    }
+    .row__desc {
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      font-size: 13px;
+    }
+    .row__meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
   }
 </style>
