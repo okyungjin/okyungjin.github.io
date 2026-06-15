@@ -2,6 +2,7 @@
 title: InnoDB 버퍼 풀 적재 내용 확인
 description: information_schema의 innodb_cached_indexes를 활용해 InnoDB 버퍼 풀에 어떤 인덱스가 얼마나 적재되었는지, 적재 비율은 어떤지 조회하는 방법을 정리합니다.
 pubDate: 2025-03-12
+category: MySQL
 tags:
   - mysql
   - innodb

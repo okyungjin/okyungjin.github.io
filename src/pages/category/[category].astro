@@ -6,24 +6,24 @@ import { SITE_TITLE } from '../../consts';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
-  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
-  return tags.map((tag) => ({
-    params: { tag },
+  const categories = [...new Set(posts.map((p) => p.data.category))];
+  return categories.map((category) => ({
+    params: { category },
     props: {
-      tag,
+      category,
       posts: posts
-        .filter((p) => p.data.tags.includes(tag))
+        .filter((p) => p.data.category === category)
         .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
     },
   }));
 }
 
-const { tag, posts } = Astro.props;
+const { category, posts } = Astro.props;
 ---
 
-<ListLayout title={`#${tag}`} description={`${tag} 태그가 달린 글 (${SITE_TITLE})`}>
+<ListLayout title={category} description={`${category} 카테고리의 글 (${SITE_TITLE})`}>
   <div class="list-head fade-up">
-    <h1>#{tag}</h1>
+    <h1>{category}</h1>
     <span>{posts.length}개</span>
   </div>
 

@@ -140,6 +140,37 @@ main {
   min-height: 70vh;
 }
 
+/* ---- Two-column list layout (sidebar + content) ------------------------ */
+.layout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 44px;
+  align-items: start;
+  padding-top: 36px;
+}
+.layout__content {
+  min-width: 0;
+}
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding-top: 24px;
+  }
+}
+
+/* Dense post grid shared by home / category / tag pages. */
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+  gap: 18px;
+}
+@media (max-width: 520px) {
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---- Tag chips --------------------------------------------------------- */
 .chip {
   display: inline-flex;

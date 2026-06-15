@@ -71,7 +71,7 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
   }
   .card__cover {
     position: relative;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 21 / 9;
     overflow: hidden;
     background:
       radial-gradient(
@@ -99,7 +99,7 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
     place-items: center;
     color: #fff;
     font-weight: 800;
-    font-size: 30px;
+    font-size: 24px;
     letter-spacing: -0.04em;
     text-transform: lowercase;
     opacity: 0.92;
@@ -111,13 +111,13 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
   .card__body {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 20px 22px 22px;
+    gap: 6px;
+    padding: 14px 16px 16px;
     flex: 1;
   }
   .card__title {
     margin: 0;
-    font-size: 19px;
+    font-size: 16.5px;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -128,8 +128,8 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
   .card__desc {
     margin: 0;
     color: var(--ink-700);
-    font-size: 14.5px;
-    line-height: 1.6;
+    font-size: 13.5px;
+    line-height: 1.55;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -138,7 +138,7 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
   }
   .card__meta {
     margin-top: auto;
-    padding-top: 12px;
+    padding-top: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -146,10 +146,18 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
     color: var(--ink-500);
     font-size: 12.5px;
   }
+  .card__meta :global(time) {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
   .card__tags {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
     justify-content: flex-end;
+    overflow: hidden;
+  }
+  .card__tags .chip {
+    white-space: nowrap;
   }
 </style>

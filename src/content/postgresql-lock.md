@@ -2,6 +2,7 @@
 title: PostgreSQL에서의 Lock
 description: MVCC 기반 동작부터 테이블 락 모드, 충돌 매트릭스, 락 모니터링, 데드락 처리까지 PostgreSQL의 잠금 메커니즘을 정리합니다.
 pubDate: 2025-02-18
+category: PostgreSQL
 tags:
   - postgresql
   - db/lock

@@ -1,8 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
+import ListLayout from '../../layouts/ListLayout.astro';
 import { SITE_TITLE } from '../../consts';
 
 const posts = await getCollection('posts');
@@ -15,57 +13,50 @@ for (const post of posts) {
 const tags = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 ---
 
-<!doctype html>
-<html lang="ko">
-  <head>
-    <BaseHead title="태그" description={`${SITE_TITLE}의 모든 태그`} />
-  </head>
-  <body>
-    <Header />
-    <main class="container container--narrow">
-      <section class="page-head fade-up">
-        <h1>태그</h1>
-        <p>주제별로 글을 모았습니다.</p>
-      </section>
-      <div class="tag-cloud fade-up">
-        {
-          tags.map(([tag, count]) => (
-            <a class="chip chip--lg" href={`/tags/${tag}/`}>
-              #{tag}
-              <span class="chip__count">{count}</span>
-            </a>
-          ))
-        }
-      </div>
-    </main>
-    <Footer />
+<ListLayout title="태그" description={`${SITE_TITLE}의 모든 태그`}>
+  <div class="list-head fade-up">
+    <h1>태그</h1>
+    <span>{tags.length}개</span>
+  </div>
+  <div class="tag-cloud fade-up">
+    {
+      tags.map(([tag, count]) => (
+        <a class="chip chip--lg" href={`/tags/${tag}/`}>
+          #{tag}
+          <span class="chip__count">{count}</span>
+        </a>
+      ))
+    }
+  </div>
+</ListLayout>
 
-    <style>
-      .page-head {
-        padding: 64px 0 32px;
-      }
-      .page-head h1 {
-        margin: 0 0 10px;
-        font-size: clamp(28px, 5vw, 40px);
-      }
-      .page-head p {
-        margin: 0;
-        color: var(--ink-700);
-        font-size: 17px;
-      }
-      .tag-cloud {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      .chip--lg {
-        font-size: 14.5px;
-        padding: 8px 14px;
-      }
-      .chip__count {
-        color: var(--ink-500);
-        font-weight: 700;
-      }
-    </style>
-  </body>
-</html>
+<style>
+  .list-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .list-head h1 {
+    margin: 0;
+    font-size: clamp(24px, 4vw, 30px);
+  }
+  .list-head span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-500);
+  }
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip--lg {
+    font-size: 14px;
+    padding: 7px 13px;
+  }
+  .chip__count {
+    color: var(--ink-500);
+    font-weight: 700;
+  }
+</style>

@@ -9,10 +9,11 @@ interface Props {
   description: string;
   pubDate: Date;
   updatedDate?: Date;
+  category: string;
   tags: string[];
 }
 
-const { title, description, pubDate, updatedDate, tags } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags } = Astro.props;
 ---
 
 <!doctype html>
@@ -26,6 +27,9 @@ const { title, description, pubDate, updatedDate, tags } = Astro.props;
       <article class="post fade-up">
         <header class="post__header">
           <div class="post__tags">
+            <a class="chip chip--cat" href={`/category/${encodeURIComponent(category)}/`}
+              >{category}</a
+            >
             {tags.map((t) => <a class="chip" href={`/tags/${t}/`}>#{t}</a>)}
           </div>
           <h1 class="post__title">{title}</h1>
@@ -66,6 +70,11 @@ const { title, description, pubDate, updatedDate, tags } = Astro.props;
         gap: 7px;
         flex-wrap: wrap;
         margin-bottom: 18px;
+      }
+      .post__tags :global(.chip--cat) {
+        color: var(--accent);
+        background: var(--accent-weak);
+        border-color: transparent;
       }
       .post__title {
         margin: 0 0 14px;

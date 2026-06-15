@@ -1,0 +1,138 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+const total = posts.length;
+
+const catCounts = new Map<string, number>();
+for (const p of posts) {
+  catCounts.set(p.data.category, (catCounts.get(p.data.category) ?? 0) + 1);
+}
+const categories = [...catCounts.entries()].sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+
+const tagCounts = new Map<string, number>();
+for (const p of posts) {
+  for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+}
+const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+const path = Astro.url.pathname;
+const isAll = path === '/';
+const catHref = (c: string) => `/category/${encodeURIComponent(c)}/`;
+const isActiveCat = (c: string) => path.startsWith(catHref(c));
+---
+
+<aside class="sidebar">
+  <nav class="side-section" aria-label="카테고리">
+    <p class="side-section__label">카테고리</p>
+    <ul class="side-list">
+      <li>
+        <a href="/" class:list={['side-link', { 'is-active': isAll }]}>
+          <span>전체</span><span class="side-link__count">{total}</span>
+        </a>
+      </li>
+      {
+        categories.map(([cat, count]) => (
+          <li>
+            <a href={catHref(cat)} class:list={['side-link', { 'is-active': isActiveCat(cat) }]}>
+              <span>{cat}</span>
+              <span class="side-link__count">{count}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <nav class="side-section" aria-label="태그">
+    <p class="side-section__label">태그</p>
+    <div class="side-tags">
+      {tags.map(([tag]) => <a class="chip" href={`/tags/${tag}/`}>#{tag}</a>)}
+    </div>
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    position: sticky;
+    top: 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+  .side-section__label {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+  .side-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .side-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink-700);
+    transition: background-color var(--dur-fast) var(--ease-smooth),
+      color var(--dur-fast) var(--ease-smooth);
+  }
+  .side-link:hover {
+    background: var(--surface);
+    color: var(--ink-900);
+  }
+  .side-link.is-active {
+    background: var(--accent-weak);
+    color: var(--accent);
+  }
+  .side-link__count {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink-500);
+  }
+  .side-link.is-active .side-link__count {
+    color: var(--accent);
+  }
+  .side-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* On narrow screens the sidebar sits on top and scrolls horizontally. */
+  @media (max-width: 860px) {
+    .sidebar {
+      position: static;
+      top: auto;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .side-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .side-link {
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+    }
+    .side-link.is-active {
+      border-color: transparent;
+    }
+  }
+</style>
