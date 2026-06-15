@@ -38,10 +38,10 @@ tags:
 
 Percona Toolkit의 도구로, 원본 테이블에 **트리거**를 걸어 복사가 진행되는 동안 들어오는 변경을 새 테이블로 실시간 반영합니다.
 
-1. **빈 테이블 생성** — 원본과 같은 구조의 `_new` 테이블을 만들고 `ALTER`를 적용
-2. **트리거 설치** — 원본에 `INSERT`/`UPDATE`/`DELETE` 트리거를 걸어 변경분을 새 테이블로 전달
-3. **데이터 복사** — 기존 행을 청크 단위로 새 테이블에 복사 (부하를 보며 조절)
-4. **원자적 교체** — `RENAME`으로 원본↔새 테이블을 교체하고 트리거 제거
+1. **빈 테이블 생성**: 원본과 같은 구조의 `_new` 테이블을 만들고 `ALTER`를 적용
+2. **트리거 설치**: 원본에 `INSERT`/`UPDATE`/`DELETE` 트리거를 걸어 변경분을 새 테이블로 전달
+3. **데이터 복사**: 기존 행을 청크 단위로 새 테이블에 복사 (부하를 보며 조절)
+4. **원자적 교체**: `RENAME`으로 원본과 새 테이블을 교체하고 트리거 제거
 
 #### 주의할 부담
 
@@ -51,10 +51,10 @@ Percona Toolkit의 도구로, 원본 테이블에 **트리거**를 걸어 복사
 
 GitHub이 만든 도구로, 트리거 대신 **binlog(ROW 포맷)** 를 읽어 변경을 따라잡습니다. 원본 테이블에 트리거를 걸지 않는 'triggerless' 방식입니다.
 
-1. **빈 테이블 생성** — 구조가 같은 ghost 테이블(`_gho`)을 만들고 `ALTER`를 적용
-2. **binlog 구독** — 복제본인 척 binlog 스트림에 붙어 원본의 변경 이벤트를 수신
-3. **복사 + 따라잡기** — 기존 행을 복사하면서 binlog로 들어온 변경을 ghost 테이블에 반영
-4. **원자적 컷오버** — `RENAME`으로 교체. 진행 중 언제든 일시정지/속도조절 가능
+1. **빈 테이블 생성**: 구조가 같은 ghost 테이블(`_gho`)을 만들고 `ALTER`를 적용
+2. **binlog 구독**: 복제본인 척 binlog 스트림에 붙어 원본의 변경 이벤트를 수신
+3. **복사 + 따라잡기**: 기존 행을 복사하면서 binlog로 들어온 변경을 ghost 테이블에 반영
+4. **원자적 컷오버**: `RENAME`으로 교체. 진행 중 언제든 일시정지/속도조절 가능
 
 #### 장점
 
@@ -280,8 +280,8 @@ SELECT COUNT(*) FROM members;
 
 ## 참고 자료
 
-- [Percona Toolkit — pt-online-schema-change](https://docs.percona.com/percona-toolkit/pt-online-schema-change.html)
-- [GitHub — gh-ost](https://github.com/github/gh-ost)
-- [gh-ost — RDS/Aurora 문서](https://github.com/github/gh-ost/blob/master/doc/rds.md)
-- [gh-ost — Requirements and Limitations](https://github.com/github/gh-ost/blob/master/doc/requirements-and-limitations.md)
-- [MySQL 8.0 Reference — Online DDL Operations](https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl-operations.html)
+- [Percona Toolkit: pt-online-schema-change](https://docs.percona.com/percona-toolkit/pt-online-schema-change.html)
+- [GitHub: gh-ost](https://github.com/github/gh-ost)
+- [gh-ost: RDS/Aurora 문서](https://github.com/github/gh-ost/blob/master/doc/rds.md)
+- [gh-ost: Requirements and Limitations](https://github.com/github/gh-ost/blob/master/doc/requirements-and-limitations.md)
+- [MySQL 8.0 Reference: Online DDL Operations](https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl-operations.html)
