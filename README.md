@@ -39,6 +39,6 @@ tags:
 
 ## 배포
 
-`master`(또는 `main`) 브랜치에 push하면 GitHub Actions가 자동으로 빌드해 GitHub Pages(<https://okyungjin.github.io>)에 배포합니다.
+`main` 브랜치에 push하면 GitHub Actions가 자동으로 빌드해 GitHub Pages(<https://okyungjin.github.io>)에 배포합니다.
 
 > GitHub 저장소 설정 → **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 설정해야 합니다.
