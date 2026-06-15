@@ -1,0 +1,154 @@
+---
+// Floating table of contents with scroll-spy highlighting (velog-style).
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Props {
+  headings: Heading[];
+}
+const { headings } = Astro.props;
+// Only h2 / h3 make a useful outline.
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length >= 2 && (
+    <aside class="toc" aria-label="목차">
+      <p class="toc__label">목차</p>
+      <nav>
+        <ul class="toc__list">
+          {items.map((h) => (
+            <li class:list={['toc__item', { 'toc__item--sub': h.depth === 3 }]}>
+              <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  )
+}
+
+<style>
+  .toc {
+    position: fixed;
+    top: 120px;
+    /* Sit in the right margin beside the centered 760px reading column. */
+    left: calc(50% + 400px);
+    width: 240px;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    padding-left: 18px;
+    border-left: 1px solid var(--line);
+    /* Hidden until the viewport is wide enough to host a side rail. */
+    display: none;
+  }
+  .toc__label {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+  .toc__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .toc__item--sub a {
+    padding-left: 14px;
+    font-size: 13px;
+  }
+  .toc__item a {
+    display: block;
+    padding: 5px 0;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--ink-500);
+    border-left: 2px solid transparent;
+    margin-left: -18px;
+    padding-left: 18px;
+    transition: color var(--dur-fast) var(--ease-smooth),
+      border-color var(--dur-fast) var(--ease-smooth);
+  }
+  .toc__item--sub a {
+    margin-left: -18px;
+    padding-left: 30px;
+  }
+  .toc__item a:hover {
+    color: var(--ink-700);
+  }
+  .toc__item a.is-active {
+    color: var(--ink-900);
+    font-weight: 600;
+    border-left-color: var(--ink-900);
+  }
+
+  /* Show the rail only when there is room to the right of the column. */
+  @media (min-width: 1280px) {
+    .toc {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  function setupToc() {
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'),
+    );
+    if (links.length === 0) return;
+
+    const linkById = new Map(links.map((l) => [l.dataset.tocLink, l]));
+    const headings = links
+      .map((l) => document.getElementById(l.dataset.tocLink!))
+      .filter((el): el is HTMLElement => el !== null);
+    if (headings.length === 0) return;
+
+    let activeId: string | null = null;
+    const OFFSET = 120; // matches sticky header + breathing room
+
+    function update() {
+      // Active heading = the last one whose top has scrolled past the offset.
+      let current = headings[0].id;
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top <= OFFSET) current = h.id;
+        else break;
+      }
+      // Near the very bottom, force-select the last heading.
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2
+      ) {
+        current = headings[headings.length - 1].id;
+      }
+      if (current === activeId) return;
+      if (activeId) linkById.get(activeId)?.classList.remove('is-active');
+      linkById.get(current)?.classList.add('is-active');
+      activeId = current;
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  }
+
+  setupToc();
+</script>

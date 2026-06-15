@@ -4,6 +4,13 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Comments from '../components/Comments.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
 
 interface Props {
   title: string;
@@ -12,9 +19,11 @@ interface Props {
   updatedDate?: Date;
   category: string;
   tags: string[];
+  headings?: Heading[];
 }
 
-const { title, description, pubDate, updatedDate, category, tags } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, headings = [] } =
+  Astro.props;
 ---
 
 <!doctype html>
@@ -24,6 +33,7 @@ const { title, description, pubDate, updatedDate, category, tags } = Astro.props
   </head>
   <body>
     <Header />
+    <TableOfContents headings={headings} />
     <main class="container container--narrow">
       <article class="post">
         <header class="post__header">
@@ -118,6 +128,9 @@ const { title, description, pubDate, updatedDate, category, tags } = Astro.props
       }
       .prose > * + * {
         margin-top: 1.1em;
+      }
+      .prose :is(h2, h3, h4) {
+        scroll-margin-top: 84px;
       }
       .prose h2 {
         margin-top: 2.2em;
