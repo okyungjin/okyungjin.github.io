@@ -69,6 +69,61 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
     </main>
     <Footer />
 
+    <script>
+      // Add a copy button to the top-right of every code block.
+      const COPY_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+      const CHECK_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+
+      document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'copy-btn';
+        btn.setAttribute('aria-label', '코드 복사');
+        btn.innerHTML = COPY_ICON;
+        let timer: ReturnType<typeof setTimeout> | undefined;
+
+        async function copy(text: string) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch {
+            // Fallback for non-focused / insecure contexts.
+            try {
+              const ta = document.createElement('textarea');
+              ta.value = text;
+              ta.style.position = 'fixed';
+              ta.style.opacity = '0';
+              document.body.appendChild(ta);
+              ta.select();
+              const ok = document.execCommand('copy');
+              document.body.removeChild(ta);
+              return ok;
+            } catch {
+              return false;
+            }
+          }
+        }
+
+        btn.addEventListener('click', async () => {
+          const code = pre.querySelector('code')?.innerText ?? pre.innerText;
+          if (!(await copy(code))) return;
+          btn.classList.add('is-copied');
+          btn.innerHTML = CHECK_ICON;
+          btn.setAttribute('aria-label', '복사됨');
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            btn.classList.remove('is-copied');
+            btn.innerHTML = COPY_ICON;
+            btn.setAttribute('aria-label', '코드 복사');
+          }, 1500);
+        });
+
+        pre.appendChild(btn);
+      });
+    </script>
+
     <style>
       .post {
         padding-top: 48px;
@@ -133,20 +188,31 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
         scroll-margin-top: 84px;
       }
       .prose h2 {
-        margin-top: 1.7em;
-        margin-bottom: 0.45em;
-        font-size: 23px;
+        margin-top: 1.8em;
+        margin-bottom: 0.5em;
+        font-size: 24px;
+        font-weight: 800;
         padding-bottom: 0.3em;
         border-bottom: 1px solid var(--line);
       }
+      /* h3 — subsection, marked with a soft left accent bar. */
       .prose h3 {
-        margin-top: 1.35em;
+        margin-top: 1.5em;
         margin-bottom: 0.4em;
-        font-size: 18.5px;
+        font-size: 19px;
+        padding-left: 12px;
+        border-left: 3px solid var(--ink-500);
       }
+      /* h4 — minor point, muted with a leading dash marker. */
       .prose h4 {
-        margin-top: 1.15em;
-        font-size: 16.5px;
+        margin-top: 1.2em;
+        margin-bottom: 0.3em;
+        font-size: 16px;
+        color: var(--ink-700);
+      }
+      .prose h4::before {
+        content: '— ';
+        color: var(--ink-500);
       }
       .prose p,
       .prose ul,
@@ -206,6 +272,7 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
 
       /* Code blocks (Shiki) */
       .prose pre {
+        position: relative;
         font-family: var(--font-mono);
         font-size: 14px;
         line-height: 1.65;
@@ -217,6 +284,44 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
       }
       .prose pre > code {
         font-family: inherit;
+      }
+
+      /* Copy button (top-right of each code block) */
+      .copy-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: inline-grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--card);
+        color: var(--ink-700);
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity var(--dur-fast) var(--ease-smooth),
+          color var(--dur-fast) var(--ease-smooth),
+          border-color var(--dur-fast) var(--ease-smooth);
+      }
+      .prose pre:hover .copy-btn,
+      .copy-btn:focus-visible {
+        opacity: 1;
+      }
+      .copy-btn:hover {
+        color: var(--ink-900);
+        border-color: var(--ink-500);
+      }
+      .copy-btn.is-copied {
+        opacity: 1;
+        color: #2f9e44;
+        border-color: #2f9e44;
+      }
+      .copy-btn svg {
+        width: 15px;
+        height: 15px;
       }
 
       /* Shiki dual-theme: swap CSS vars on dark mode. */
