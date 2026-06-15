@@ -13,8 +13,14 @@ interface Props {
 
 const { id, title, description, pubDate, category, tags, heroImage } = Astro.props;
 const href = `/posts/${id}/`;
-// Derive a stable accent hue from the slug so cover blocks vary but stay calm.
-const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
+// Give each category its own calm-but-clean cover hue; fall back to a
+// stable slug-derived hue for any uncategorized post.
+const COVER_HUES: Record<string, number> = {
+  postgresql: 214, // blue
+  mysql: 168, // teal
+};
+const fallbackHue = 24 + ([...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 300);
+const hue = COVER_HUES[(category ?? '').toLowerCase()] ?? fallbackHue;
 const mark = category ?? tags[0]?.split('/')[0] ?? 'db';
 ---
 
@@ -78,8 +84,8 @@ const mark = category ?? tags[0]?.split('/')[0] ?? 'db';
     background:
       radial-gradient(
         120% 120% at 20% 10%,
-        hsl(var(--cover-hue, 214) 90% 64% / 0.9),
-        hsl(calc(var(--cover-hue, 214) + 40) 84% 52% / 0.9)
+        hsl(var(--cover-hue, 214) 50% 62% / 0.95),
+        hsl(calc(var(--cover-hue, 214) + 14) 54% 46% / 0.97)
       );
   }
   .row__img {
