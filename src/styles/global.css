@@ -189,17 +189,6 @@ a.chip:hover {
   background: var(--accent-weak);
 }
 
-/* ==========================================================================
-   View Transitions — native cross-fade between pages
-   ========================================================================== */
-
-/* Native cross-fade between full pages, eased with our custom curve. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: var(--dur-slow);
-  animation-timing-function: var(--ease-smooth);
-}
-
 /* Respect reduced-motion preferences. */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -211,9 +200,5 @@ a.chip:hover {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none !important;
   }
 }

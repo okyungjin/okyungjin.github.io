@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from 'astro:transitions';
 import { SITE_TITLE, SITE_AUTHOR } from '../consts';
 import '../styles/global.css';
 
@@ -60,12 +59,4 @@ const fullTitle = title === SITE_TITLE ? title : `${title} · ${SITE_TITLE}`;
     const theme = stored || (prefersDark ? 'dark' : 'light');
     document.documentElement.dataset.theme = theme;
   })();
-  // Re-apply on every client-side navigation so the theme never flashes.
-  document.addEventListener('astro:after-swap', () => {
-    const theme = localStorage.getItem('theme');
-    if (theme) document.documentElement.dataset.theme = theme;
-  });
 </script>
-
-<!-- Smooth client-side navigation (View Transitions API) -->
-<ClientRouter />
