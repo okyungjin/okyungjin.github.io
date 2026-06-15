@@ -22,12 +22,12 @@ const { category, posts } = Astro.props;
 ---
 
 <ListLayout title={category} description={`${category} 카테고리의 글 (${SITE_TITLE})`}>
-  <div class="list-head fade-up">
+  <div class="list-head">
     <h1>{category}</h1>
     <span>{posts.length}개</span>
   </div>
 
-  <div class="post-grid stagger">
+  <div class="post-grid">
     {
       posts.map((post) => (
         <PostCard

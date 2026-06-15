@@ -24,7 +24,7 @@ const { title, description, pubDate, updatedDate, category, tags } = Astro.props
   <body>
     <Header />
     <main class="container container--narrow">
-      <article class="post fade-up">
+      <article class="post">
         <header class="post__header">
           <div class="post__tags">
             <a class="chip chip--cat" href={`/category/${encodeURIComponent(category)}/`}
@@ -50,7 +50,7 @@ const { title, description, pubDate, updatedDate, category, tags } = Astro.props
         </div>
       </article>
 
-      <div class="post__back fade-up">
+      <div class="post__back">
         <a href="/" class="back-link">← 목록으로</a>
       </div>
     </main>

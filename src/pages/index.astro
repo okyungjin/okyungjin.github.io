@@ -10,18 +10,18 @@ const posts = (await getCollection('posts')).sort(
 ---
 
 <ListLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-  <section class="intro fade-up">
+  <section class="intro">
     <p class="intro__eyebrow">👋 안녕하세요</p>
     <h1 class="intro__title">DBA로 일하면서 배운 것들을 기록하는 공간입니다.</h1>
     <p class="intro__sub">주로 데이터베이스 관련 내용을 다룹니다.</p>
   </section>
 
-  <div class="list-head fade-up">
+  <div class="list-head">
     <h2>전체 글</h2>
     <span>{posts.length}개</span>
   </div>
 
-  <div class="post-grid stagger">
+  <div class="post-grid">
     {
       posts.map((post) => (
         <PostCard
