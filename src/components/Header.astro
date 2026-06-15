@@ -1,0 +1,84 @@
+---
+import { SITE_TITLE } from '../consts';
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label={SITE_TITLE}>
+      <span class="brand__mark">d</span>
+      <span class="brand__name">{SITE_TITLE}</span>
+    </a>
+    <nav class="site-nav">
+      <a href="/">홈</a>
+      <a href="/tags">태그</a>
+      <a href="/rss.xml">RSS</a>
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--base) 82%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--dur) var(--ease-smooth),
+      border-color var(--dur) var(--ease-smooth);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-900);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    font-size: 19px;
+  }
+  .brand:hover {
+    color: var(--ink-900);
+  }
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 17px;
+    line-height: 1;
+  }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .site-nav a {
+    color: var(--ink-700);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .site-nav a:hover {
+    color: var(--accent);
+  }
+  @media (max-width: 560px) {
+    .site-nav {
+      gap: 16px;
+    }
+    .site-nav a {
+      font-size: 14px;
+    }
+  }
+</style>

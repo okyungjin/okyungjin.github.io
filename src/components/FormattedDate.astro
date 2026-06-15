@@ -1,0 +1,14 @@
+---
+interface Props {
+  date: Date;
+}
+const { date } = Astro.props;
+const iso = date.toISOString();
+const label = new Intl.DateTimeFormat('ko-KR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(date);
+---
+
+<time datetime={iso}>{label}</time>

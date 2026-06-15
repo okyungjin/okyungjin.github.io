@@ -1,0 +1,232 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags: string[];
+}
+
+const { id, title, description, pubDate, updatedDate, tags } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <BaseHead title={title} description={description} type="article" />
+  </head>
+  <body>
+    <Header />
+    <main class="container container--narrow">
+      <article class="post fade-up">
+        <header class="post__header">
+          <div class="post__tags">
+            {tags.map((t) => <a class="chip" href={`/tags/${t}/`}>#{t}</a>)}
+          </div>
+          <h1 class="post__title" transition:name={`post-title-${id}`}>{title}</h1>
+          <p class="post__desc">{description}</p>
+          <div class="post__meta">
+            <FormattedDate date={pubDate} />
+            {
+              updatedDate && (
+                <span class="post__updated">
+                  · 업데이트 <FormattedDate date={updatedDate} />
+                </span>
+              )
+            }
+          </div>
+        </header>
+        <div class="prose">
+          <slot />
+        </div>
+      </article>
+
+      <div class="post__back fade-up">
+        <a href="/" class="back-link">← 목록으로</a>
+      </div>
+    </main>
+    <Footer />
+
+    <style>
+      .post {
+        padding-top: 48px;
+      }
+      .post__header {
+        margin-bottom: 40px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--line);
+      }
+      .post__tags {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+      .post__title {
+        margin: 0 0 14px;
+        font-size: clamp(28px, 5vw, 40px);
+        line-height: 1.25;
+      }
+      .post__desc {
+        margin: 0 0 18px;
+        color: var(--ink-700);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      .post__meta {
+        color: var(--ink-500);
+        font-size: 14px;
+      }
+      .post__back {
+        margin-top: 56px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+      }
+      .back-link {
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--ink-700);
+      }
+      .back-link:hover {
+        color: var(--accent);
+      }
+    </style>
+
+    <!-- Prose styles for markdown body (global so they reach rendered HTML). -->
+    <style is:global>
+      .prose {
+        color: var(--ink-900);
+        font-size: 16.5px;
+        line-height: 1.8;
+      }
+      .prose > * + * {
+        margin-top: 1.1em;
+      }
+      .prose h2 {
+        margin-top: 2.2em;
+        margin-bottom: 0.6em;
+        font-size: 25px;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid var(--line);
+      }
+      .prose h3 {
+        margin-top: 1.8em;
+        margin-bottom: 0.5em;
+        font-size: 19.5px;
+      }
+      .prose h4 {
+        margin-top: 1.5em;
+        font-size: 17px;
+      }
+      .prose p,
+      .prose ul,
+      .prose ol {
+        color: var(--ink-700);
+      }
+      .prose strong {
+        color: var(--ink-900);
+        font-weight: 700;
+      }
+      .prose ul,
+      .prose ol {
+        padding-left: 1.4em;
+      }
+      .prose li {
+        margin-top: 0.4em;
+      }
+      .prose li::marker {
+        color: var(--ink-500);
+      }
+      .prose a {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+      }
+      .prose hr {
+        margin: 2.4em 0;
+        border: 0;
+        border-top: 1px solid var(--line);
+      }
+      .prose img {
+        display: block;
+        margin: 1.6em auto;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--line);
+      }
+      .prose blockquote {
+        margin-inline: 0;
+        padding: 4px 18px;
+        border-left: 3px solid var(--accent);
+        color: var(--ink-700);
+        background: var(--accent-weak);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+
+      /* Inline code */
+      .prose :not(pre) > code {
+        font-family: var(--font-mono);
+        font-size: 0.86em;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        color: var(--accent-strong);
+        word-break: break-word;
+      }
+
+      /* Code blocks (Shiki) */
+      .prose pre {
+        font-family: var(--font-mono);
+        font-size: 14px;
+        line-height: 1.65;
+        padding: 18px 20px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--line);
+        overflow-x: auto;
+        tab-size: 2;
+      }
+      .prose pre > code {
+        font-family: inherit;
+      }
+
+      /* Shiki dual-theme: swap CSS vars on dark mode. */
+      :root[data-theme='dark'] .prose .astro-code,
+      :root[data-theme='dark'] .prose .astro-code span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+      }
+
+      /* Tables */
+      .prose table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14.5px;
+        display: block;
+        overflow-x: auto;
+      }
+      .prose th,
+      .prose td {
+        padding: 9px 14px;
+        border: 1px solid var(--line);
+        text-align: left;
+      }
+      .prose thead th {
+        background: var(--surface);
+        font-weight: 700;
+        color: var(--ink-900);
+      }
+      .prose tbody tr:nth-child(even) {
+        background: color-mix(in srgb, var(--surface) 50%, transparent);
+      }
+    </style>
+  </body>
+</html>

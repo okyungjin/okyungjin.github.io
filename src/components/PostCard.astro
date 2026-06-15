@@ -1,0 +1,155 @@
+---
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  heroImage?: string;
+}
+
+const { id, title, description, pubDate, tags, heroImage } = Astro.props;
+const href = `/posts/${id}/`;
+// Derive a stable accent hue from the slug so cover blocks vary but stay calm.
+const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
+---
+
+<article class="card">
+  <a class="card__link" href={href} aria-label={title}>
+    <div
+      class="card__cover"
+      style={heroImage ? '' : `--cover-hue:${hue}`}
+      data-has-image={heroImage ? 'true' : 'false'}
+    >
+      {
+        heroImage ? (
+          <img class="card__img" src={heroImage} alt="" loading="lazy" />
+        ) : (
+          <span class="card__cover-mark" aria-hidden="true">
+            {tags[0]?.split('/')[0] ?? 'db'}
+          </span>
+        )
+      }
+    </div>
+    <div class="card__body">
+      <h2 class="card__title" transition:name={`post-title-${id}`}>{title}</h2>
+      <p class="card__desc">{description}</p>
+      <div class="card__meta">
+        <FormattedDate date={pubDate} />
+        <div class="card__tags">
+          {tags.slice(0, 3).map((t) => <span class="chip">#{t}</span>)}
+        </div>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--dur) var(--ease-smooth),
+      box-shadow var(--dur) var(--ease-smooth),
+      border-color var(--dur) var(--ease-smooth);
+    will-change: transform;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  }
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+  }
+  .card__cover {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background:
+      radial-gradient(
+        120% 120% at 20% 10%,
+        hsl(var(--cover-hue, 214) 90% 64% / 0.9),
+        hsl(calc(var(--cover-hue, 214) + 40) 84% 52% / 0.9)
+      );
+  }
+  .card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* Micro-zoom on hover — the signature card motion. */
+    transform: scale(1.001);
+    transition: transform var(--dur-slow) var(--ease-smooth);
+  }
+  .card:hover .card__img {
+    transform: scale(1.06);
+  }
+  .card__cover-mark {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    opacity: 0.92;
+    transition: transform var(--dur-slow) var(--ease-smooth);
+  }
+  .card:hover .card__cover-mark {
+    transform: scale(1.06);
+  }
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 22px 22px;
+    flex: 1;
+  }
+  .card__title {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card__desc {
+    margin: 0;
+    color: var(--ink-700);
+    font-size: 14.5px;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card__meta {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--ink-500);
+    font-size: 12.5px;
+  }
+  .card__tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+</style>

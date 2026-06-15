@@ -1,0 +1,224 @@
+/* ==========================================================================
+   dvlog — global styles & design tokens
+   Hand-written CSS so page-transition timing stays fully under our control.
+   ========================================================================== */
+
+/* ---- Fonts (CDN) ------------------------------------------------------- */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ---- Design tokens ----------------------------------------------------- */
+:root {
+  /* Neutral ink ramp */
+  --ink-900: #191f28;
+  --ink-700: #4e5968;
+  --ink-500: #8b95a1;
+
+  /* Surfaces */
+  --base: #ffffff;
+  --surface: #f5f6f8;
+  --card: #ffffff;
+  --line: #eaecef;
+
+  /* Brand accent */
+  --accent: #3182f6;
+  --accent-weak: rgba(49, 130, 246, 0.1);
+  --accent-strong: #1b64da;
+
+  /* Effects */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+  /* Motion — custom easing drives the whole "smooth" feel */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 160ms;
+  --dur: 280ms;
+  --dur-slow: 520ms;
+
+  /* Layout */
+  --maxw: 760px;
+  --maxw-wide: 1080px;
+  --radius: 16px;
+  --radius-sm: 10px;
+
+  /* Typography */
+  --font-sans: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont,
+    system-ui, 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
+}
+
+:root[data-theme='dark'] {
+  --ink-900: #e9edf2;
+  --ink-700: #aeb8c4;
+  --ink-500: #7b8694;
+
+  --base: #16181d;
+  --surface: #1d2026;
+  --card: #21242b;
+  --line: #2b2f38;
+
+  --accent: #4593fc;
+  --accent-weak: rgba(69, 147, 252, 0.14);
+  --accent-strong: #6aa9ff;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* ---- Reset ------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--base);
+  color: var(--ink-900);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--dur) var(--ease-smooth),
+    color var(--dur) var(--ease-smooth);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  color: var(--ink-900);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-smooth);
+}
+
+a:hover {
+  color: var(--accent-strong);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background: var(--accent-weak);
+  color: var(--ink-900);
+}
+
+/* ---- Layout helpers ---------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--maxw-wide);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.container--narrow {
+  max-width: var(--maxw);
+}
+
+main {
+  min-height: 70vh;
+}
+
+/* ---- Tag chips --------------------------------------------------------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-700);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: background-color var(--dur-fast) var(--ease-smooth),
+    color var(--dur-fast) var(--ease-smooth),
+    border-color var(--dur-fast) var(--ease-smooth);
+}
+
+a.chip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-weak);
+}
+
+/* ==========================================================================
+   View Transitions — native cross-fade + content fade-up
+   ========================================================================== */
+
+/* Native cross-fade between full pages, eased with our custom curve. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-smooth);
+}
+
+/* Fade-up entrance for the main content of every page. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fade-up var(--dur-slow) var(--ease-smooth) both;
+}
+
+/* Stagger children that opt in. */
+.stagger > * {
+  animation: fade-up var(--dur-slow) var(--ease-smooth) both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 80ms; }
+.stagger > *:nth-child(4) { animation-delay: 120ms; }
+.stagger > *:nth-child(5) { animation-delay: 160ms; }
+.stagger > *:nth-child(6) { animation-delay: 200ms; }
+.stagger > *:nth-child(7) { animation-delay: 240ms; }
+.stagger > *:nth-child(8) { animation-delay: 280ms; }
+.stagger > *:nth-child(n + 9) { animation-delay: 320ms; }
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}

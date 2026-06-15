@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main class="container">
+      <section class="hero fade-up">
+        <p class="hero__eyebrow">👋 안녕하세요</p>
+        <h1 class="hero__title">DBA로 일하면서 배운 것들을<br />기록하는 공간입니다.</h1>
+        <p class="hero__sub">주로 데이터베이스 관련 내용을 다룹니다.</p>
+      </section>
+
+      <section class="posts">
+        <h2 class="section-title">최근 글</h2>
+        <div class="grid stagger">
+          {
+            posts.map((post) => (
+              <PostCard
+                id={post.id}
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                tags={post.data.tags}
+                heroImage={post.data.heroImage}
+              />
+            ))
+          }
+        </div>
+      </section>
+    </main>
+    <Footer />
+
+    <style>
+      .hero {
+        padding: 72px 0 56px;
+      }
+      .hero__eyebrow {
+        margin: 0 0 16px;
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: -0.02em;
+      }
+      .hero__title {
+        margin: 0 0 18px;
+        font-size: clamp(30px, 6vw, 48px);
+        line-height: 1.25;
+        letter-spacing: -0.04em;
+      }
+      .hero__sub {
+        margin: 0;
+        color: var(--ink-700);
+        font-size: 18px;
+      }
+      .section-title {
+        margin: 0 0 24px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--ink-500);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+      }
+      @media (max-width: 560px) {
+        .hero {
+          padding: 48px 0 40px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </body>
+</html>

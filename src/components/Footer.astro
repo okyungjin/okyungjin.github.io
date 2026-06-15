@@ -1,0 +1,32 @@
+---
+import { SITE_TITLE } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p>© {year} {SITE_TITLE}</p>
+    <p class="site-footer__meta">DBA notes · Built with Astro</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 96px;
+    border-top: 1px solid var(--line);
+    transition: border-color var(--dur) var(--ease-smooth);
+  }
+  .site-footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-block: 28px;
+    color: var(--ink-500);
+    font-size: 13.5px;
+  }
+  .site-footer p {
+    margin: 0;
+  }
+</style>
