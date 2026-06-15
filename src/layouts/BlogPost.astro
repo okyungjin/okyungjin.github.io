@@ -107,8 +107,14 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
         }
 
         btn.addEventListener('click', async () => {
-          const code = pre.querySelector('code')?.innerText ?? pre.innerText;
-          if (!(await copy(code))) return;
+          const code = (pre.querySelector('code')?.innerText ?? pre.innerText).replace(
+            /\n+$/,
+            '',
+          );
+          // Wrap in a fenced block so pasting elsewhere keeps the language.
+          const lang = pre.getAttribute('data-language') || '';
+          const payload = '```' + lang + '\n' + code + '\n```';
+          if (!(await copy(payload))) return;
           btn.classList.add('is-copied');
           btn.innerHTML = CHECK_ICON;
           btn.setAttribute('aria-label', '복사됨');
@@ -274,9 +280,9 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
       .prose pre {
         position: relative;
         font-family: var(--font-mono);
-        font-size: 14px;
-        line-height: 1.65;
-        padding: 18px 20px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        padding: 16px 18px;
         border-radius: var(--radius-sm);
         border: 1px solid var(--line);
         overflow-x: auto;
@@ -289,35 +295,42 @@ const { title, description, pubDate, updatedDate, category, tags, headings = [] 
       /* Copy button (top-right of each code block) */
       .copy-btn {
         position: absolute;
-        top: 8px;
-        right: 8px;
+        top: 9px;
+        right: 9px;
         display: inline-grid;
         place-items: center;
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
         padding: 0;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--card);
-        color: var(--ink-700);
+        border: 0;
+        border-radius: 7px;
+        background: color-mix(in srgb, currentColor 9%, transparent);
+        color: color-mix(in srgb, var(--ink-900) 55%, transparent);
         cursor: pointer;
-        opacity: 0.5;
+        opacity: 0;
+        transform: translateY(-1px);
         transition: opacity var(--dur-fast) var(--ease-smooth),
-          color var(--dur-fast) var(--ease-smooth),
-          border-color var(--dur-fast) var(--ease-smooth);
+          background-color var(--dur-fast) var(--ease-smooth),
+          color var(--dur-fast) var(--ease-smooth);
       }
       .prose pre:hover .copy-btn,
       .copy-btn:focus-visible {
         opacity: 1;
       }
       .copy-btn:hover {
+        background: color-mix(in srgb, currentColor 16%, transparent);
         color: var(--ink-900);
-        border-color: var(--ink-500);
       }
       .copy-btn.is-copied {
         opacity: 1;
         color: #2f9e44;
-        border-color: #2f9e44;
+        background: color-mix(in srgb, #2f9e44 15%, transparent);
+      }
+      /* Always discoverable on touch devices (no hover). */
+      @media (hover: none) {
+        .copy-btn {
+          opacity: 0.6;
+        }
       }
       .copy-btn svg {
         width: 15px;
