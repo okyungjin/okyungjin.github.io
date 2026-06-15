@@ -34,7 +34,7 @@ const hue = [...id].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
       }
     </div>
     <div class="card__body">
-      <h2 class="card__title" transition:name={`post-title-${id}`}>{title}</h2>
+      <h2 class="card__title">{title}</h2>
       <p class="card__desc">{description}</p>
       <div class="card__meta">
         <FormattedDate date={pubDate} />

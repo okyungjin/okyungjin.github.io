@@ -5,7 +5,6 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
 interface Props {
-  id: string;
   title: string;
   description: string;
   pubDate: Date;
@@ -13,7 +12,7 @@ interface Props {
   tags: string[];
 }
 
-const { id, title, description, pubDate, updatedDate, tags } = Astro.props;
+const { title, description, pubDate, updatedDate, tags } = Astro.props;
 ---
 
 <!doctype html>
@@ -29,7 +28,7 @@ const { id, title, description, pubDate, updatedDate, tags } = Astro.props;
           <div class="post__tags">
             {tags.map((t) => <a class="chip" href={`/tags/${t}/`}>#{t}</a>)}
           </div>
-          <h1 class="post__title" transition:name={`post-title-${id}`}>{title}</h1>
+          <h1 class="post__title">{title}</h1>
           <p class="post__desc">{description}</p>
           <div class="post__meta">
             <FormattedDate date={pubDate} />
