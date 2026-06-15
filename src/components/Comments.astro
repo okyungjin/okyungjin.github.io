@@ -1,0 +1,72 @@
+---
+// giscus comments (GitHub Discussions). The giscus GitHub App must be
+// installed on the repo for these to work: https://github.com/apps/giscus
+const GISCUS = {
+  repo: 'okyungjin/okyungjin.github.io',
+  repoId: 'MDEwOlJlcG9zaXRvcnkzNTI1ODc5MzQ=',
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOFQQQns4C_M4a',
+};
+---
+
+<section class="comments" aria-label="댓글">
+  <h2 class="comments__title">댓글</h2>
+  <div id="giscus-mount" data-giscus={JSON.stringify(GISCUS)}></div>
+</section>
+
+<style>
+  .comments {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .comments__title {
+    margin: 0 0 16px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink-700);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const mount = document.getElementById('giscus-mount');
+    if (!mount) return;
+    const cfg = JSON.parse(mount.dataset.giscus);
+    const theme = () =>
+      document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+
+    const s = document.createElement('script');
+    s.src = 'https://giscus.app/client.js';
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    Object.entries({
+      'data-repo': cfg.repo,
+      'data-repo-id': cfg.repoId,
+      'data-category': cfg.category,
+      'data-category-id': cfg.categoryId,
+      'data-mapping': 'pathname',
+      'data-strict': '1',
+      'data-reactions-enabled': '1',
+      'data-emit-metadata': '0',
+      'data-input-position': 'top',
+      'data-theme': theme(),
+      'data-lang': 'ko',
+      'data-loading': 'lazy',
+    }).forEach(([k, v]) => s.setAttribute(k, v));
+    mount.appendChild(s);
+
+    // Keep giscus theme in sync with the site theme toggle.
+    new MutationObserver(() => {
+      const frame = document.querySelector('iframe.giscus-frame');
+      if (!frame) return;
+      frame.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: theme() } } },
+        'https://giscus.app',
+      );
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  })();
+</script>
