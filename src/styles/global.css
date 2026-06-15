@@ -22,9 +22,9 @@
   --line: #eaecef;
 
   /* Brand accent */
-  --accent: #191f28;
-  --accent-weak: rgba(25, 31, 40, 0.06);
-  --accent-strong: #000000;
+  --accent: #3182f6;
+  --accent-weak: rgba(49, 130, 246, 0.1);
+  --accent-strong: #1b64da;
 
   /* Effects */
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -59,9 +59,9 @@
   --card: #21242b;
   --line: #2b2f38;
 
-  --accent: #f0f3f7;
-  --accent-weak: rgba(240, 243, 247, 0.1);
-  --accent-strong: #ffffff;
+  --accent: #4593fc;
+  --accent-weak: rgba(69, 147, 252, 0.14);
+  --accent-strong: #6aa9ff;
 
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0 10px 30px rgba(0, 0, 0, 0.45);
